@@ -1,13 +1,10 @@
 import { ChatEngine } from "react-chat-engine";
 import ChatFeed from "./components/ChatFeed";
 import LoginForm from "./components/LoginForm";
+import NewChatFeed from "./components/NewChatFeed";
 import "./App.css";
 
 function App() {
-  // if (!localStorage.getItem("username")) {
-  //   return <RegisterForm />;
-  // }
-
   if (!localStorage.getItem("username")) {
     return <LoginForm />;
   }
@@ -22,4 +19,5 @@ function App() {
     />
   );
 }
+
 export default App;
