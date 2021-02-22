@@ -1,36 +1,57 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import axios from "axios";
-import LoginForm from "./LoginForm";
 
-const RegisterForm = () => {
+const RegisterForm = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [verification, setVerification] = useState("");
   const [first_name, setFirstname] = useState("");
   const [last_name, setLastname] = useState("");
   const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+  const [toogle, setToogle] = useState({});
+  console.log(props);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      await axios.post(
-        "https://api.chatengine.io/users/",
-        {
-          username: username,
-          secret: password,
-          first_name: first_name,
-          last_name: last_name,
-        },
-        { headers: { "PRIVATE-KEY": "36038e03-6686-4394-98c6-c58b0136eb88" } }
-      );
-      setSuccess("Please enter your information on Log In section!");
-      setPassword("");
-      setFirstname("");
-      setUsername("");
-      setLastname("");
-    } catch (error) {
-      console.log(error);
+    if (verification !== password) {
+      setError("Passwords does not match!");
+      setToogle({ borderColor: "red" });
+    } else {
+      try {
+        await axios.post(
+          "https://api.chatengine.io/users/",
+          {
+            username: username,
+            secret: password,
+            first_name: first_name,
+            last_name: last_name,
+          },
+          { headers: { "PRIVATE-KEY": "36038e03-6686-4394-98c6-c58b0136eb88" } }
+        );
+        await axios.post(
+          "https://api.chatengine.io/chats/5747/people/",
+          { username: username },
+          {
+            headers: {
+              "Project-ID": "b9623237-4ac1-48fc-b999-d0dc80b802c4",
+              "User-Name": "jameskidd312",
+              "User-Secret": "123123",
+            },
+          }
+        );
+        setSuccess("Please enter your information on Log In section!");
+        setError("");
+        setPassword("");
+        setVerification("");
+        setFirstname("");
+        setUsername("");
+        setLastname("");
+        setToogle({ borderColor: "" });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -55,6 +76,16 @@ const RegisterForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="input"
             placeholder="Password"
+            style={toogle}
+            required
+          />
+          <input
+            type="password"
+            value={verification}
+            onChange={(e) => setVerification(e.target.value)}
+            className="input"
+            placeholder="Confirm password"
+            style={toogle}
             required
           />
           <input
@@ -88,6 +119,17 @@ const RegisterForm = () => {
             className="title"
           >
             {success}
+          </h1>
+          <h1
+            style={{
+              textTransform: "uppercase",
+              fontSize: "25px",
+              color: "#D6FF79",
+              paddingTop: "25px",
+            }}
+            className="title"
+          >
+            {error}
           </h1>
         </form>
       </div>
